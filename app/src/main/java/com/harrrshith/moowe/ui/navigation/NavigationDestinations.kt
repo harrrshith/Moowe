@@ -2,6 +2,7 @@ package com.harrrshith.moowe.ui.navigation
 
 object NavigationDestinations {
 
+    data object OnBoarding: Screen("onBoarding")
     data object Home : Screen("home") {
         data object Discover: Screen("discover")
         data object Explore: Screen("explore")
