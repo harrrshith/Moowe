@@ -1,13 +1,26 @@
 package com.harrrshith.moowe.ui
 
+import android.annotation.SuppressLint
 import android.graphics.RectF
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -15,12 +28,22 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.harrrshith.moowe.R
 import com.harrrshith.moowe.ui.theme.MooweTheme
+import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -56,41 +79,73 @@ fun ScreenFour(){
 fun OnBoardingScreen(
     navigateToHome: () -> Unit
 ){
-//    val scrollState = rememberScrollState()
-//    val listItems = listOf("A", "B")
-//    Box(modifier = Modifier
-//        .horizontalScroll(scrollState)
-//        .fillMaxWidth()
-//        .height(400.dp)
-//        .drawBehind {
-//            val radius = size.height / 2f
-//            val itemWidth = size.width / listItems.size
-//
-//            listItems.forEachIndexed { index, _ -> // Assuming we don't need the item name for arcs
-//                val startAngle = (index * 360f / listItems.size).toFloat()
-//                val sweepAngle = 360f / listItems.size // Equal width for each item
-//                val endAngle = startAngle + sweepAngle
-//
-//                // Calculate the position for the center of the arc
-//                val centerX = size.width / 2f
-//                val centerY = size.height / 2f
-//
-//                // Draw the arc
-//                drawContext.canvas.nativeCanvas.drawArc(
-//                    RectF(centerX - radius, centerY - radius, centerX + radius, centerY + radius),
-//                    startAngle,
-//                    sweepAngle,
-//                    false,
-//                    android.graphics.Paint().apply {
-//                        color = android.graphics.Color.BLACK
-//                    }
-//                )
-//            }
-//        }
-//    )
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Button(onClick = { navigateToHome() }) {
-            Text(text = "Click Here")
+    val imageList = listOf(
+        R.drawable.image_one,
+        R.drawable.image_two,
+        R.drawable.image_one,
+        R.drawable.image_two,
+        R.drawable.image_one,
+    )
+    ArcList(
+        modifier = Modifier.fillMaxSize(),
+        radius = 120.dp,
+    ) { index, rotationAngle ->
+        Image(
+            painter = painterResource(id = imageList[index]),
+            contentDescription = "image $index",
+            modifier = Modifier
+                .height(180.dp)
+                .aspectRatio(.5f)
+                .rotate(rotationAngle)
+                .clip(RoundedCornerShape(12.dp)),
+            contentScale = ContentScale.Crop
+        )
+    }
+}
+
+@SuppressLint("UnusedBoxWithConstraintsScope")
+@Composable
+fun ArcList(
+    modifier: Modifier = Modifier,
+    radius: Dp,
+    itemSpacing: Dp = 2.dp,
+    content: @Composable (Int, Float) -> Unit
+) {
+    BoxWithConstraints(modifier) {
+        Layout(
+            content = {
+                for (i in 0 until 5) {  // Assuming 5 images, adjust as needed
+                    val rotationAngle = when {
+                        i < 2 -> 18f
+                        i == 2 -> 0f
+                        else -> -18f
+                    }
+                    content(i, rotationAngle)
+                }
+            }
+        ) { measurables, constraints ->
+            val placeables = measurables.map { measurable ->
+                measurable.measure(constraints)
+            }
+
+            val arcRadius = radius.toPx()
+            val itemWidth = placeables.first().width
+            val totalWidth = 600
+            val arcLength = PI.toFloat() * arcRadius
+            val scale = totalWidth / arcLength
+
+            layout(constraints.maxWidth, constraints.maxHeight) {
+                val centerX = constraints.maxWidth / 2
+                val centerY = constraints.maxHeight / 2
+
+                placeables.forEachIndexed { index, placeable ->
+                    val angleRad = (PI.toFloat() / 2) + (index - (placeables.size - 1) / 2f) * scale
+                    val x = centerX + (arcRadius * cos(angleRad)).toInt() - placeable.width / 2
+                    val y = centerY - (arcRadius * sin(angleRad)).toInt() - placeable.height / 2
+
+                    placeable.place(x, y)
+                }
+            }
         }
     }
 }
