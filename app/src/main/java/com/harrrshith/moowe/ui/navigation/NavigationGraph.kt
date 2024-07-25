@@ -6,11 +6,11 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
-import com.harrrshith.moowe.ui.OnBoardingScreen
 import com.harrrshith.moowe.ui.ScreenFour
 import com.harrrshith.moowe.ui.ScreenOne
 import com.harrrshith.moowe.ui.ScreenThree
 import com.harrrshith.moowe.ui.ScreenTwo
+import com.harrrshith.moowe.ui.onboarding.OnBoardingRoute
 
 @Composable
 fun NavigationGraph(
@@ -20,7 +20,7 @@ fun NavigationGraph(
 ) {
     NavHost(navController = navController, startDestination = startDestination){
         composable(NavigationDestinations.OnBoarding.route){
-            OnBoardingScreen(navigateToHome = { navController.navigate(NavigationDestinations.Home.route) })
+            OnBoardingRoute()
         }
         navigation(
             route = NavigationDestinations.Home.route,
