@@ -12,12 +12,12 @@ import com.harrrshith.moowe.ui.theme.MooweTheme
 
 @Composable
 fun MooweApp(
-
+    modifier: Modifier = Modifier
 ){
     val navController = rememberNavController()
     MooweTheme {
         Scaffold(
-            modifier = Modifier.imePadding(),
+            modifier = modifier.imePadding(),
             bottomBar = { HomeBottomBar(navController) }
         ) {innerPadding ->
             NavigationGraph(

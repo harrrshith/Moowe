@@ -1,19 +1,35 @@
 package com.harrrshith.moowe.ui.onboarding
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.EaseInCubic
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.safeContentPadding
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableIntState
@@ -46,12 +62,15 @@ import kotlin.math.sin
 
 @Composable
 fun OnBoardingRoute() {
-    OnBoardingScreen()
+    OnBoardingScreen(
+        Modifier.safeDrawingPadding()
+    )
 }
 
 @Composable
-fun OnBoardingScreen() {
-    var screenOpacity by remember { mutableFloatStateOf(0f) }
+fun OnBoardingScreen(
+    modifier: Modifier
+) {
     var backgroundState by remember { mutableIntStateOf(1) }
     val imageList = listOf(
         R.drawable.image_one,
@@ -77,23 +96,26 @@ fun OnBoardingScreen() {
             MaterialTheme.colorScheme.tertiary,
         )
     )
-    var backgroundGradient = gradientOne
-    Crossfade(targetState = backgroundState, label = "") {
-        backgroundGradient = when(it) {
-            1 -> gradientOne
-            2 -> gradientTwo
-            else -> gradientOne
+    Crossfade(targetState = backgroundState, label = "", animationSpec = tween(500, easing = EaseInCubic)) {
+        when(it) {
+            1 -> {
+                Box(modifier = Modifier
+                    .fillMaxSize()
+                    .background(gradientOne)
+                )
+            }
+            2 -> {
+                Box(modifier = Modifier
+                    .fillMaxSize()
+                    .background(gradientTwo)
+                )
+            }
         }
 
     }
 
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .background(backgroundGradient)
-        .alpha(screenOpacity)
-    )
     ArcList(
-        modifier = Modifier,
+        modifier = modifier,
         radius = 270.dp,
     ) { index, rotationAngle ->
         Image(
@@ -106,13 +128,6 @@ fun OnBoardingScreen() {
         )
     }
 
-    LaunchedEffect(key1 = screenOpacity ) {
-        delay(500)
-        screenOpacity -= 0.1f
-        if (screenOpacity < 0.2f){
-            screenOpacity = 1f
-        }
-    }
     LaunchedEffect(key1 = backgroundState) {
         delay(4000)
         backgroundState = if(backgroundState == 1) 2 else 1
@@ -167,8 +182,8 @@ fun ArcList(
                 placeables.forEachIndexed { index, placeable ->
                     val angleRad = (PI.toFloat() / 2) - (index - (placeables.size - 1) / 2f) * scale
                     val x = centerX + (arcRadius * cos(angleRad)).toInt() - placeable.width / 2
-                    val y = centerY - (arcRadius * sin(angleRad)).toInt() + placeable.height * 2
-                    placeable.place(x, y)
+                    val y = (centerY - (arcRadius * sin(angleRad)).toInt() + placeable.height / 1.1).toInt()
+                    placeable.place(x, y * 2)
                 }
             }
         }
@@ -183,7 +198,7 @@ fun PreviewOnBoardingScreen(){
         Surface(
             modifier = Modifier.fillMaxSize()
         ) {
-            OnBoardingScreen()
+            OnBoardingScreen(Modifier.fillMaxSize())
         }
     }
 }
