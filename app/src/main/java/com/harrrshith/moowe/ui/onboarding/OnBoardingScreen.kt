@@ -53,6 +53,7 @@ import com.harrrshith.moowe.ui.theme.MooweTheme
 import kotlinx.coroutines.delay
 import kotlin.math.PI
 import kotlin.math.cos
+import kotlin.math.min
 import kotlin.math.sin
 import kotlin.random.Random
 
@@ -80,72 +81,72 @@ fun OnBoardingScreen(
         R.drawable.image_four,
         R.drawable.image_five,
     )
-    val infiniteTransition = rememberInfiniteTransition(label = "infinite animation")
-    val animatedFloatAlpha by infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 5000, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "alpha"
-    )
-
-    val animatedFloatAlphaReverse by infiniteTransition.animateFloat(
-        initialValue = 1f,
-        targetValue = 0f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 5000, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "alpha"
-    )
-    val colorsOne = listOf(
-        Color.Cyan,
-        MaterialTheme.colorScheme.primary,
-        MaterialTheme.colorScheme.tertiary,
-        MaterialTheme.colorScheme.onPrimaryContainer
-    )
-    val colorsTwo = listOf(
-        MaterialTheme.colorScheme.primary,
-        MaterialTheme.colorScheme.onPrimaryContainer,
-        Color.Black,
-        MaterialTheme.colorScheme.tertiary,
-    )
-    val animatedColorOne by infiniteTransition.animateColor(
-        initialValue = colorsOne[getRandom],
-        targetValue = colorsOne[getRandom],
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 3000, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "animatedColorOne"
-    )
-
-    val animatedColorTwo by infiniteTransition.animateColor(
-        initialValue = colorsTwo[getRandom],
-        targetValue = colorsTwo[getRandom],
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 4000, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "animatedColorTwo"
-    )
-
-    Canvas(modifier = modifier.fillMaxSize()) {
-        val gradient1 = Brush.linearGradient(
-            colors = listOf(animatedColorOne, animatedColorTwo),
-            start = Offset(0f, 0f),
-            end = Offset(size.width, size.height)
-        )
-        val gradient2 = Brush.linearGradient(
-            colors = listOf(animatedColorTwo, animatedColorOne),
-            start = Offset(size.width, 0f),
-            end = Offset(0f, size.height)
-        )
-        drawRect(brush = gradient1, alpha = animatedFloatAlpha)
-        drawRect(brush = gradient2, alpha = animatedFloatAlphaReverse)
-    }
+//    val infiniteTransition = rememberInfiniteTransition(label = "infinite animation")
+//    val animatedFloatAlpha by infiniteTransition.animateFloat(
+//        initialValue = 0f,
+//        targetValue = 1f,
+//        animationSpec = infiniteRepeatable(
+//            animation = tween(durationMillis = 5000, easing = LinearEasing),
+//            repeatMode = RepeatMode.Reverse
+//        ),
+//        label = "alpha"
+//    )
+//
+//    val animatedFloatAlphaReverse by infiniteTransition.animateFloat(
+//        initialValue = 1f,
+//        targetValue = 0f,
+//        animationSpec = infiniteRepeatable(
+//            animation = tween(durationMillis = 5000, easing = LinearEasing),
+//            repeatMode = RepeatMode.Reverse
+//        ),
+//        label = "alpha"
+//    )
+//    val colorsOne = listOf(
+//        Color.Cyan,
+//        MaterialTheme.colorScheme.primary,
+//        MaterialTheme.colorScheme.tertiary,
+//        MaterialTheme.colorScheme.onPrimaryContainer
+//    )
+//    val colorsTwo = listOf(
+//        MaterialTheme.colorScheme.primary,
+//        MaterialTheme.colorScheme.onPrimaryContainer,
+//        Color.Black,
+//        MaterialTheme.colorScheme.tertiary,
+//    )
+//    val animatedColorOne by infiniteTransition.animateColor(
+//        initialValue = colorsOne[getRandom],
+//        targetValue = colorsOne[getRandom],
+//        animationSpec = infiniteRepeatable(
+//            animation = tween(durationMillis = 3000, easing = LinearEasing),
+//            repeatMode = RepeatMode.Reverse
+//        ),
+//        label = "animatedColorOne"
+//    )
+//
+//    val animatedColorTwo by infiniteTransition.animateColor(
+//        initialValue = colorsTwo[getRandom],
+//        targetValue = colorsTwo[getRandom],
+//        animationSpec = infiniteRepeatable(
+//            animation = tween(durationMillis = 4000, easing = LinearEasing),
+//            repeatMode = RepeatMode.Reverse
+//        ),
+//        label = "animatedColorTwo"
+//    )
+//
+//    Canvas(modifier = modifier.fillMaxSize()) {
+//        val gradient1 = Brush.linearGradient(
+//            colors = listOf(animatedColorOne, animatedColorTwo),
+//            start = Offset(0f, 0f),
+//            end = Offset(size.width, size.height)
+//        )
+//        val gradient2 = Brush.linearGradient(
+//            colors = listOf(animatedColorTwo, animatedColorOne),
+//            start = Offset(size.width, 0f),
+//            end = Offset(0f, size.height)
+//        )
+//        drawRect(brush = gradient1, alpha = animatedFloatAlpha)
+//        drawRect(brush = gradient2, alpha = animatedFloatAlphaReverse)
+//    }
 
 //    Box(modifier = Modifier
 //        .fillMaxSize()
@@ -160,13 +161,17 @@ fun OnBoardingScreen(
     }
 }
 
+private val getRandom: Int
+    get() = Random.nextInt(0, 3)
+
 @Composable
 fun ArcImageList(imageList: List<Int>) {
     val itemTransformations = remember { mutableStateMapOf<Int, ItemTransformation>() }
     ArcLazyRow(
         modifier = Modifier.fillMaxSize(),
         radius = 180.dp,
-        itemSpacing = 20.dp
+        itemSpacing = 20.dp,
+        itemTransformations = itemTransformations
     ) {
         items(imageList.size) { index ->
             val transformation = itemTransformations[index]
@@ -175,9 +180,9 @@ fun ArcImageList(imageList: List<Int>) {
                 contentDescription = "image $index",
                 modifier = Modifier
                     .graphicsLayer {
-                        translationX = transformation?.x?.toFloat() ?: 0f
-                        translationY = transformation?.y?.toFloat() ?: 0f
-                        rotationZ = transformation?.rotation ?: 0f
+                       translationX = itemTransformation[index].x
+                       translationY = itemTransformation[index].y
+                       rotationZ = itemTransformation[index].rotation
                     }
                     .padding(horizontal = 8.dp)
                     .height(120.dp)
@@ -189,26 +194,24 @@ fun ArcImageList(imageList: List<Int>) {
     }
 }
 
-private val getRandom: Int
-    get() = Random.nextInt(0, 3)
-
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun ArcLazyRow(
     modifier: Modifier = Modifier,
     radius: Dp,
     itemSpacing: Dp = 20.dp,
+    itemTransformations: MutableMap<Int, ItemTransformation>,
     content: LazyListScope.() -> Unit
 ) {
     val lazyListState = rememberLazyListState()
-    val itemTransformations = remember { mutableStateMapOf<Int, ItemTransformation>() }
 
     Layout(
         content = {
             LazyRow(
+                modifier = modifier,
                 state = lazyListState,
                 content = content,
-                horizontalArrangement = Arrangement.SpaceEvenly
+                horizontalArrangement = Arrangement.spacedBy(itemSpacing)
             )
         },
         modifier = modifier
@@ -221,32 +224,37 @@ fun ArcLazyRow(
         val itemWidth = visibleItemsInfo.firstOrNull()?.size ?: 0
         val totalWidth = itemWidth * itemCount + itemSpacing.toPx() * (itemCount - 1)
         val arcLength = PI.toFloat() * arcRadius
-        val scale = totalWidth / arcLength
+        val scale = min(1f, totalWidth / arcLength)
 
         layout(constraints.maxWidth, constraints.maxHeight) {
             val centerX = constraints.maxWidth / 2
-            val centerY = constraints.maxHeight / 2
+            val centerY = constraints.maxHeight
 
-            rowPlaceable.placeRelative(0, centerY)
+            rowPlaceable.placeRelative(0, centerY - rowPlaceable.height)
 
             visibleItemsInfo.forEach { itemInfo ->
                 val index = itemInfo.index
                 val angleRad = (PI.toFloat() / 2) + (index - (itemCount - 1) / 2f) * scale
                 val x = centerX + (arcRadius * cos(angleRad)).toInt() - itemWidth / 2
-                val y = centerY - (arcRadius * sin(angleRad)).toInt() - itemInfo.size / 2
-                val rotationAngle = 180f - (angleRad * 180f / PI.toFloat())
-                itemTransformations[index] = ItemTransformation(x, y, rotationAngle)
+                val y = centerY - (arcRadius * sin(angleRad)).toInt() + itemInfo.size / 2
+                val rotationAngle = -(angleRad * 180f / PI.toFloat()) + 90f
+                itemTransformations[index] = ItemTransformation(x.toFloat(), y.toFloat(), rotationAngle)
             }
         }
     }
 }
 
 data class ItemTransformation(
-    val x: Int,
-    val y: Int,
+    val x: Float,
+    val y: Float,
     val rotation: Float
 )
 
+val itemTransformation = listOf(
+    ItemTransformation(20f, 100f, -20f),
+    ItemTransformation(10f, 0f, 0f),
+    ItemTransformation(-20f, 100f, 20f),
+)
 
 @Preview
 @Composable
