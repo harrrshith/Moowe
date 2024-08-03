@@ -1,13 +1,19 @@
 package com.harrrshith.moowe.ui.navigation
 
-object NavigationDestinations {
+import kotlinx.serialization.Serializable
 
-    data object OnBoarding: Screen("onBoarding")
-    data object Home : Screen("home") {
-        data object Discover: Screen("discover")
-        data object Explore: Screen("explore")
-        data object Search: Screen("search")
-        data object Profile: Screen("profile")
+sealed class NavigationDestinations {
+    @Serializable
+    data object Onboard: NavigationDestinations()
+    @Serializable
+    data object Home: NavigationDestinations(){
+        @Serializable
+        data object Discover: NavigationDestinations()
+        @Serializable
+        data object Explore: NavigationDestinations()
+        @Serializable
+        data object Search: NavigationDestinations()
+        @Serializable
+        data object Profile: NavigationDestinations()
     }
-    abstract class Screen(val route: String)
 }

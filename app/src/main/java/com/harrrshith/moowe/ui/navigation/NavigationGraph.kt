@@ -1,11 +1,12 @@
 package com.harrrshith.moowe.ui.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.navigation
+import androidx.navigation.navigation
 import com.harrrshith.moowe.ui.ScreenFour
 import com.harrrshith.moowe.ui.ScreenOne
 import com.harrrshith.moowe.ui.ScreenThree
@@ -14,31 +15,38 @@ import com.harrrshith.moowe.ui.onboarding.OnBoardingRoute
 
 @Composable
 fun NavigationGraph(
-    modifier: Modifier = Modifier,
     navController: NavHostController,
-    startDestination: String = NavigationDestinations.OnBoarding.route,
+    modifier: Modifier = Modifier,
 ) {
-    NavHost(navController = navController, startDestination = startDestination){
-        composable(NavigationDestinations.OnBoarding.route){
-            OnBoardingRoute()
+    val startDestination = NavigationDestinations.Onboard
+    val navigationActions = remember(navController) {
+        MoweeNavigation(navController)
+    }
+    NavHost(
+        modifier = modifier,
+        navController = navController,
+        startDestination = startDestination
+    ){
+        composable<NavigationDestinations.Onboard> {
+            OnBoardingRoute(
+                navigateToHome = { navigationActions.navigateToHome() }
+            )
         }
-        navigation(
-            route = NavigationDestinations.Home.route,
-            startDestination = NavigationDestinations.Home.Discover.route
+        navigation<NavigationDestinations.Home>(
+            startDestination = NavigationDestinations.Home.Discover,
         ){
-            composable(NavigationDestinations.Home.Discover.route){
+            composable<NavigationDestinations.Home.Discover> {
                 ScreenOne()
             }
-            composable(NavigationDestinations.Home.Explore.route){
+            composable<NavigationDestinations.Home.Explore> {
                 ScreenTwo()
             }
-            composable(NavigationDestinations.Home.Search.route){
+            composable<NavigationDestinations.Home.Search> {
                 ScreenThree()
             }
-            composable(NavigationDestinations.Home.Profile.route){
+            composable<NavigationDestinations.Home.Profile> {
                 ScreenFour()
             }
-
         }
     }
 }

@@ -1,6 +1,5 @@
 package com.harrrshith.moowe.ui
 
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -17,7 +16,7 @@ fun MooweApp(
     val navController = rememberNavController()
     MooweTheme {
         Scaffold(
-            modifier = modifier.imePadding(),
+            modifier = modifier,
             bottomBar = { HomeBottomBar(navController) }
         ) {innerPadding ->
             NavigationGraph(
