@@ -1,9 +1,12 @@
 package com.harrrshith.moowe.ui
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.navigation.compose.rememberNavController
 import com.harrrshith.moowe.ui.home.HomeBottomBar
 import com.harrrshith.moowe.ui.navigation.NavigationGraph
@@ -16,8 +19,10 @@ fun MooweApp(
     val navController = rememberNavController()
     MooweTheme {
         Scaffold(
-            modifier = modifier,
-            bottomBar = { HomeBottomBar(navController) }
+            modifier = modifier.background(Color.Transparent),
+            bottomBar = { HomeBottomBar(navController) },
+            containerColor = Color.Transparent,
+            contentWindowInsets = WindowInsets(0, 0, 0, 0)
         ) {innerPadding ->
             NavigationGraph(
                 modifier = Modifier.padding(innerPadding),
