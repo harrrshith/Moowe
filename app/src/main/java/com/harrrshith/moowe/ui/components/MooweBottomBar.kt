@@ -1,6 +1,5 @@
-package com.harrrshith.moowe.ui.home
+package com.harrrshith.moowe.ui.components
 
-import androidx.compose.foundation.background
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
@@ -10,13 +9,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -24,42 +24,15 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.harrrshith.moowe.ui.navigation.NavigationDestinations
 
-enum class HomeTabs(
-    val route: NavigationDestinations,
-    val screenName: String,
-    val icon: ImageVector
-){
-    DISCOVER(
-        route = NavigationDestinations.Home.Discover,
-        screenName = "Discover",
-        icon = Icons.Filled.Home
-    ),
-    EXPLORE(
-        route = NavigationDestinations.Home.Explore,
-        screenName = "Explore",
-        icon = Icons.Filled.Favorite
-    ),
-    SEARCH(
-        route = NavigationDestinations.Home.Search,
-        screenName = "Search",
-        icon = Icons.Filled.Search
-    ),
-    PROFILE(
-        route = NavigationDestinations.Home.Profile,
-        screenName = "Search",
-        icon = Icons.Filled.Person
-    )
-}
-
 @Composable
-fun HomeBottomBar(navController: NavHostController){
-    val tabs = remember { HomeTabs.entries.toTypedArray().asList() }
-    val routes = remember { HomeTabs.entries.map { it.route } }
+fun MooweBottomBar(navController: NavHostController){
+    val tabs = remember { MooweBottomBarDestinations.entries.toTypedArray().asList() }
+    val routes = remember { MooweBottomBarDestinations.entries.map { it.route } }
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
     val shouldShowBottomBar = currentDestination?.route in routes.map { it::class.qualifiedName }
     if (shouldShowBottomBar) {
-        HomeBottomBarView(
+        MooweBottomBar(
             tabs = tabs,
             currentRoute = currentDestination,
             tabClick = {
@@ -78,14 +51,15 @@ fun HomeBottomBar(navController: NavHostController){
 }
 
 @Composable
-private fun HomeBottomBarView(
-    tabs: List<HomeTabs>,
+internal fun MooweBottomBar(
+    tabs: List<MooweBottomBarDestinations>,
     currentRoute: NavDestination?,
-    tabClick: (HomeTabs) -> Unit
+    tabClick: (MooweBottomBarDestinations) -> Unit
 ) {
     NavigationBar(
-        Modifier.background(Color.Transparent),
-        tonalElevation = 4.dp
+        tonalElevation = 4.dp,
+        containerColor = Color.Transparent,
+        contentColor = Color.Transparent
     ) {
         tabs.forEach { tab ->
             val selected = currentRoute?.hierarchy?.any { it.route == tab.route::class.qualifiedName } == true
@@ -93,17 +67,38 @@ private fun HomeBottomBarView(
                 icon = {
                     Icon(
                         imageVector = tab.icon,
-                        contentDescription = tab.screenName,
-                        tint = if (selected) MaterialTheme.colorScheme.primary else Color.Black
+                        contentDescription = tab.screen,
+                        tint = if (selected) MaterialTheme.colorScheme.tertiary else Color.White
                     )
                 },
                 selected = selected,
                 onClick = { tabClick(tab) },
-                alwaysShowLabel = false,
+                alwaysShowLabel = true,
                 label = {
-                    Text(text = tab.screenName, style = MaterialTheme.typography.bodySmall)
-                }
+                    Text(
+                        text = tab.screen,
+                        style = MaterialTheme.typography.bodySmall.copy(fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal),
+                    )
+                },
+                colors = NavigationBarItemDefaults.colors(
+                    selectedTextColor = MaterialTheme.colorScheme.tertiary,
+                    selectedIconColor = MaterialTheme.colorScheme.tertiary,
+                    unselectedIconColor = MaterialTheme.colorScheme.onPrimary,
+                    indicatorColor = Color.Transparent
+                )
             )
         }
     }
+}
+
+
+enum class MooweBottomBarDestinations(
+    val route: NavigationDestinations,
+    val screen: String,
+    val icon: ImageVector
+){
+    DISCOVER(route = NavigationDestinations.Home.Discover, screen = "Discover", icon = Icons.Filled.Home),
+    EXPLORE(route = NavigationDestinations.Home.Explore, screen = "Explore", icon = Icons.Filled.Favorite),
+    SEARCH(route = NavigationDestinations.Home.Search, screen = "Search", icon = Icons.Filled.Search),
+    PROFILE(route = NavigationDestinations.Home.Profile, screen = "Search", icon = Icons.Filled.Person)
 }

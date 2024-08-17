@@ -17,6 +17,7 @@ import com.harrrshith.moowe.ui.onboarding.OnBoardingRoute
 fun NavigationGraph(
     navController: NavHostController,
     modifier: Modifier = Modifier,
+    onTopBarTitleChange: (String) -> Unit
 ) {
     val startDestination = NavigationDestinations.Onboard
     val navigationActions = remember(navController) {
@@ -36,15 +37,19 @@ fun NavigationGraph(
             startDestination = NavigationDestinations.Home.Discover,
         ){
             composable<NavigationDestinations.Home.Discover> {
+                onTopBarTitleChange("Discover")
                 ScreenOne()
             }
             composable<NavigationDestinations.Home.Explore> {
+                onTopBarTitleChange("Explore")
                 ScreenTwo()
             }
             composable<NavigationDestinations.Home.Search> {
+                onTopBarTitleChange("Search")
                 ScreenThree()
             }
             composable<NavigationDestinations.Home.Profile> {
+                onTopBarTitleChange("Profile")
                 ScreenFour()
             }
         }

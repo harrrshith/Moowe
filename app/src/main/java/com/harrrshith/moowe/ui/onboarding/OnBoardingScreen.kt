@@ -4,11 +4,14 @@ import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.StartOffset
+import androidx.compose.animation.core.StartOffsetType
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -34,9 +37,11 @@ import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.core.graphics.translationMatrix
 import kotlinx.coroutines.delay
 import kotlin.math.cos
 import kotlin.math.sin
+import kotlin.random.Random
 
 
 @SuppressLint("WrongConstant")
@@ -60,13 +65,19 @@ fun OnBoardingScreen(
 ){
     var showAnimation by remember { mutableStateOf(false) }
     Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center){
-        AnimatedVisibility(visible = showAnimation, enter = expandVertically(expandFrom = Alignment.Bottom)) {
+        AnimatedVisibility(
+            visible = showAnimation,
+            enter = expandVertically(expandFrom = Alignment.Bottom),
+            exit = slideOutVertically(
+                animationSpec = tween(durationMillis = 200, easing = LinearEasing)
+            )
+        ) {
             Button(onClick = { navigateToHome() }) {
                 Text(text = "Home", style = MaterialTheme.typography.titleLarge)
             }
         }
     }
-    LaunchedEffect(key1 = true) {
+    LaunchedEffect(key1 = Unit) {
         delay(1500)
         showAnimation = !showAnimation
     }
@@ -93,8 +104,7 @@ fun AnimatedBlobBackground(modifier: Modifier = Modifier) {
         initialValue = 0f,
         targetValue = 1f,
         animationSpec = infiniteRepeatable(
-            animation = tween(5000, easing = LinearEasing),
-            repeatMode = RepeatMode.Restart
+            animation = tween(10000, easing = LinearEasing),
         ),
         label = "blobAnimation"
     )
@@ -103,8 +113,9 @@ fun AnimatedBlobBackground(modifier: Modifier = Modifier) {
         initialValue = 1f,
         targetValue = 0f,
         animationSpec = infiniteRepeatable(
-            animation = tween(4800, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse
+            animation = tween(10000, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart,
+            initialStartOffset = StartOffset(100, StartOffsetType.Delay)
         ),
         label = "blobAnimation"
     )
