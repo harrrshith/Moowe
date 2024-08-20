@@ -1,27 +1,29 @@
 package com.harrrshith.moowe.ui.onboarding
 
 import android.annotation.SuppressLint
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.StartOffset
 import androidx.compose.animation.core.StartOffsetType
 import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -31,17 +33,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.core.graphics.translationMatrix
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.dp
+import com.harrrshith.moowe.ui.theme.MooweTheme
 import kotlinx.coroutines.delay
 import kotlin.math.cos
 import kotlin.math.sin
-import kotlin.random.Random
 
 
 @SuppressLint("WrongConstant")
@@ -63,23 +68,65 @@ fun OnBoardingScreen(
     modifier: Modifier = Modifier,
     navigateToHome: () -> Unit,
 ){
-    var showAnimation by remember { mutableStateOf(false) }
+    var startAnimation by remember { mutableStateOf(false) }
+    var startAlpha by remember { mutableStateOf(false) }
+    var startButtonAlpha by remember { mutableStateOf(false) }
+    val animatedOffsetY by  animateFloatAsState(
+        targetValue = if (startAnimation) 0f else 1500f,
+        label = "offsetY"
+    )
+    val animatedAlpha by animateFloatAsState(
+        targetValue = if (startAlpha) 1f else .5f,
+        label = "alpha"
+    )
+    val animatedButtonAlpha by animateFloatAsState(
+        targetValue = if (startButtonAlpha) 1f else 0f,
+        label = "alpha"
+    )
+    val animatedButtonWidth by animateFloatAsState(
+        targetValue = if (startButtonAlpha) 180f else 0f,
+        label = "width"
+    )
+    val animatedButtonHeight by animateFloatAsState(
+        targetValue = if (startButtonAlpha) 50f else 0f,
+        label = "width"
+    )
     Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center){
-        AnimatedVisibility(
-            visible = showAnimation,
-            enter = expandVertically(expandFrom = Alignment.Bottom),
-            exit = slideOutVertically(
-                animationSpec = tween(durationMillis = 200, easing = LinearEasing)
+        Text(
+            text = "Moowe",
+            style = MaterialTheme.typography.displayLarge,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .offset { IntOffset(x = 0, y = animatedOffsetY.toInt()) }
+                .alpha(animatedAlpha)
+        )
+        Button(
+            onClick = { navigateToHome() },
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 80.dp)
+                .alpha(animatedButtonAlpha)
+                .height(animatedButtonHeight.dp)
+                .width(animatedButtonWidth.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.tertiary,
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
             )
         ) {
-            Button(onClick = { navigateToHome() }) {
-                Text(text = "Home", style = MaterialTheme.typography.titleLarge)
-            }
+            Text(
+                text = "Get Started",
+                style = MaterialTheme.typography.bodyLarge,
+            )
         }
     }
-    LaunchedEffect(key1 = Unit) {
-        delay(1500)
-        showAnimation = !showAnimation
+
+    LaunchedEffect(Unit) {
+        delay(1000)
+        startAnimation = !startAnimation
+        delay(200)
+        startAlpha = !startAlpha
+        delay(200)
+        startButtonAlpha = !startButtonAlpha
     }
 }
 data class Blob(val color: Color, var x: Float, var y: Float)
@@ -153,5 +200,18 @@ private fun DrawScope.drawBlobBackground(blobs: List<Blob>, progress: Float) {
         brush = Brush.verticalGradient(listOf(Color.Transparent, Color.White.copy(alpha = 0.2f))),
         blendMode = BlendMode.Lighten
     )
+}
+
+@Preview
+@Composable
+fun PreviewOnBoardingScreen() {
+    MooweTheme {
+        Surface {
+            OnBoardingScreen(
+                modifier = Modifier.fillMaxSize(),
+                navigateToHome = {}
+            )
+        }
+    }
 }
 
