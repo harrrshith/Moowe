@@ -8,7 +8,7 @@ class MoweeNavigation(
     val navigateToHome: () -> Unit = {
         navController.navigate(route = NavigationDestinations.Home) {
             launchSingleTop = true
-            restoreState = true
+            restoreState = false
         }
     }
 }

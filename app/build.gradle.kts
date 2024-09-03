@@ -73,4 +73,7 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     //Serialization
     implementation(libs.jetbrains.kotlinx.serialization.json)
+
+    //Palette
+    implementation(libs.androidx.palette.ktx)
 }

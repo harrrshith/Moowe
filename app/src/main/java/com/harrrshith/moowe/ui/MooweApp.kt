@@ -3,6 +3,7 @@ package com.harrrshith.moowe.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -32,7 +33,9 @@ fun MooweApp(
                     topBarTitle = topBarTitle
                 )
             },
-            bottomBar = { MooweBottomBar(navController = navController)},
+            bottomBar = {
+                MooweBottomBar(navController = navController)
+            },
             contentWindowInsets = WindowInsets(0, 0, 0, 0)
         ) {innerPadding ->
             NavigationGraph(

@@ -11,6 +11,7 @@ import com.harrrshith.moowe.ui.ScreenFour
 import com.harrrshith.moowe.ui.ScreenOne
 import com.harrrshith.moowe.ui.ScreenThree
 import com.harrrshith.moowe.ui.ScreenTwo
+import com.harrrshith.moowe.ui.discover.DiscoverRoute
 import com.harrrshith.moowe.ui.onboarding.OnBoardingRoute
 
 @Composable
@@ -38,7 +39,7 @@ fun NavigationGraph(
         ){
             composable<NavigationDestinations.Home.Discover> {
                 onTopBarTitleChange("Discover")
-                ScreenOne()
+                DiscoverRoute()
             }
             composable<NavigationDestinations.Home.Explore> {
                 onTopBarTitleChange("Explore")

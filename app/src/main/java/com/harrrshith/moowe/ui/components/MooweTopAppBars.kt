@@ -13,30 +13,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.harrrshith.moowe.ui.navigation.NavigationDestinations
+import com.harrrshith.moowe.ui.navigation.isTopLevelDestination
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MooweTopAppBar(
      navController: NavHostController,
      topBarTitle: String,
-     onBackPressed: () -> Unit = {}
 ){
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination?.route
-    if (currentDestination != NavigationDestinations.Onboard::class.qualifiedName) {
+    if (isTopLevelDestination(currentDestination)) {
         TopAppBar(
             title = { Text(text = topBarTitle, style = MaterialTheme.typography.titleLarge) },
-            navigationIcon = {
-                if (navController.previousBackStackEntry != null && shouldShowBottomShouldShowNavigationIcon(currentDestination)) {
-                    IconButton(onClick = onBackPressed) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back"
-                        )
-                    }
-                }
-            },
             colors = TopAppBarDefaults.topAppBarColors(
                 containerColor = MaterialTheme.colorScheme.background,
                 titleContentColor = MaterialTheme.colorScheme.tertiary,
@@ -44,10 +33,4 @@ fun MooweTopAppBar(
             )
         )
     }
-}
-
-val bottomBarDestinations = MooweBottomBarDestinations.entries.map { it.route }
-
-private val shouldShowBottomShouldShowNavigationIcon: (currentRoute: String?) -> Boolean= { currentRoute ->
-    currentRoute !in bottomBarDestinations.map { it::class.qualifiedName }
 }
