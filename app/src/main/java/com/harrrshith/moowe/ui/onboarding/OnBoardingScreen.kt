@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.safeDrawingPadding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -39,14 +38,19 @@ import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.harrrshith.moowe.R
 import com.harrrshith.moowe.ui.theme.MooweTheme
 import kotlinx.coroutines.delay
 import kotlin.math.cos
 import kotlin.math.sin
+import kotlin.random.Random
 
 
 @SuppressLint("WrongConstant")
@@ -93,8 +97,8 @@ fun OnBoardingScreen(
     )
     Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center){
         Text(
-            text = "Moowe",
-            style = MaterialTheme.typography.displayLarge,
+            text = stringResource(id = R.string.app_name),
+            style = MaterialTheme.typography.displayLarge.copy(fontSize = 42.sp),
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .offset { IntOffset(x = 0, y = animatedOffsetY.toInt()) }
@@ -114,8 +118,8 @@ fun OnBoardingScreen(
             )
         ) {
             Text(
-                text = "Get Started",
-                style = MaterialTheme.typography.bodyLarge,
+                text = stringResource(id = R.string.get_started),
+                style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
             )
         }
     }
