@@ -1,5 +1,6 @@
 package com.harrrshith.moowe.ui.components
 
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -9,7 +10,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -49,10 +51,13 @@ internal fun MooweBottomBar(
     tabClick: (TopLevelDestination) -> Unit
 ) {
     NavigationBar(
-        tonalElevation = 4.dp,
-        containerColor = Color.Transparent,
-        contentColor = Color.Transparent
-    ) {
+        modifier = Modifier.clip(
+            RoundedCornerShape(
+                topEnd = 32.dp,
+                topStart = 32.dp
+            )
+        )
+    ){
         tabs.forEach { tab ->
             val selected = currentRoute == tab.route::class.qualifiedName
             NavigationBarItem(
@@ -77,7 +82,7 @@ internal fun MooweBottomBar(
                     selectedTextColor = MaterialTheme.colorScheme.tertiary,
                     selectedIconColor = MaterialTheme.colorScheme.tertiary,
                     unselectedIconColor = MaterialTheme.colorScheme.onPrimary,
-                    indicatorColor = Color.Transparent
+                    indicatorColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = .5f)
                 )
             )
         }

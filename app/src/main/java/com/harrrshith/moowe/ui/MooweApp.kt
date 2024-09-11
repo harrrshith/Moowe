@@ -1,5 +1,6 @@
 package com.harrrshith.moowe.ui
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
@@ -11,7 +12,7 @@ import androidx.navigation.compose.rememberNavController
 import com.harrrshith.moowe.ui.components.MooweBottomBar
 import com.harrrshith.moowe.ui.navigation.NavigationGraph
 import com.harrrshith.moowe.ui.theme.MooweTheme
-
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun MooweApp(
     modifier: Modifier = Modifier
@@ -19,14 +20,13 @@ fun MooweApp(
     val navController = rememberNavController()
     MooweTheme {
         Scaffold(
-            modifier = modifier.background(Color.Transparent),
             bottomBar = {
                 MooweBottomBar(navController = navController)
             },
-            contentWindowInsets = WindowInsets(0, 0, 0, 0)
-        ) {innerPadding ->
+            contentWindowInsets = WindowInsets(0, 0, 0, -1000)
+        ) {_ ->
             NavigationGraph(
-                modifier = Modifier.padding(innerPadding),
+                modifier = modifier,
                 navController = navController
             )
         }
